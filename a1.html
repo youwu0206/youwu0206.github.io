@@ -12,19 +12,14 @@
     <h1>You Wu's Assignment 1!</h1>
     <div class="header">
       <img src="Blinking.gif" />
-      <p>Here is all the documentation for assignment 1!</p>
+      <p>This assignment uses three LEDs (red, green, and blue) connected to Arduino Uno pins 3, 5, and 6.  
+         Each LED blinks independently through 330Ω resistors to safely limit current. 
+      </p>
     </div>
-
-    <hr>
-    <h2>Project: Three LEDs Blinking Independently</h2>
-    <img src="Blinking.gif" alt="Three LEDs blinking" width="400" />
-    <p>
-      This project makes three LEDs (red, green, and blue) blink independently.  
-      Each LED blinks through 330 ohm resistors to limit the current.  
-    </p>
+    <br>
 
     <h2>Schematic</h2>
-    <img src="schematics.jpg" alt="Circuit Schematic" width="400" />
+    <img src="schematic.jpg" alt="Circuit Schematic" width="400" />
     <p>
       Each LED is connected to a pin (3, 5, or 6) through a resistor and then to GND.  
       This ensures that each LED can blink separately without affecting the others.
@@ -32,6 +27,7 @@
       <strong>Resistor Calculation:</strong><br>
       Using Ohm’s Law, we have the calculation R = (5 - 2) / 0.01 = 300 Ω, which is closest to 330.
     </p>
+      <br>
 
     <h2>Arduino Code</h2>
     <pre><code>
@@ -77,17 +73,20 @@
       500 ms ON and 500 ms OFF. The ON voltage for red LED is about 2.0 V, Green LED about 2.2 V, Blue LED about 3.0 V.
     </p>
     <img src="graph.jpg" alt="Voltage vs Time Graph" width="600" />
+    <br>
 
     <h3>2) How many LEDs could I blink independently? How much current is that?</h3>
     <p>
       I can blink up to 12 LEDs independently; since each of my LEDs uses about 10 mA current,
       that would be about 120 mA current.
     </p>
+    <br>
 
     <h3>3) How fast until I can’t tell they’re blinking?</h3>
     <p>
       When the LEDs blink faster than 60 times per second, it would look as if it's constantly on.
     </p>
+    <br>
 
     <h3>4) Use of AI tools</h3>
     <p>
@@ -97,6 +96,7 @@
       the breadboard and my ground wire should be connected to the correct rail. After fixing these issues,
       my LEDs were able to blink and light up successfully. 
     </p>
+    <br>
 
 
     <p><a href="index.html">← Back to main page</a></p>
