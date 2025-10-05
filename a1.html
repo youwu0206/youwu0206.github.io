@@ -4,15 +4,102 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>You Wu's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>You Wu's Assignment 1!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
+      <img src="Blinking.gif" />
       <p>Here is all the documentation for assignment 1!</p>
     </div>
+
+    <hr>
+    <h2>Project: Three LEDs Blinking Independently</h2>
+    <img src="Blinking.gif" alt="Three LEDs blinking" width="400" />
+    <p>
+      This project makes three LEDs (red, green, and blue) blink independently.  
+      Each LED blinks through 330 ohm resistors to limit the current.  
+      The Arduino controls the timing of each blink with the <code>digitalWrite()</code> and <code>delay()</code> functions.
+    </p>
+
+    <h2>Schematic</h2>
+    <img src="schematics.jpeg" alt="Circuit schematic" width="400" />
+    <p>
+      Each LED is connected to a pin (3, 5, or 6) through a resistor and then to GND.  
+      This ensures that each LED can blink separately without affecting the others.
+      <br><br>
+      <strong>Resistor Calculation:</strong><br>
+      Using Ohm’s Law, we have the calculation R = (5 - 2) / 0.01 = 300 Ω, which is closest to 330.
+    </p>
+
+    <h2>Arduino Code</h2>
+    <pre><code>
+    // LEDs are connected to which pin numbers
+    const int RED_LED = 3;
+    const int GREEN_LED = 5;
+    const int BLUE_LED = 6;
+      
+      
+    void setup() {
+      // put your setup code here, to run once:
+      // Set each LED as an output
+      pinMode(RED_LED, OUTPUT);
+      pinMode(GREEN_LED, OUTPUT);
+      pinMode(BLUE_LED, OUTPUT);
+    }
+      
+      
+    void loop() {
+      // put your main code here, to run repeatedly:
+      // RED LED on for 500 ms and off
+      digitalWrite(RED_LED, HIGH);
+      delay(500);
+      digitalWrite(RED_LED, LOW);
+      
+      // GREEN LED on for 500 ms and off
+      digitalWrite(GREEN_LED, HIGH);
+      delay(500);
+      digitalWrite(GREEN_LED, LOW);
+      
+      // BLUE LED on for 500 ms and off
+      digitalWrite(BLUE_LED, HIGH);
+      delay(500);
+      digitalWrite(BLUE_LED, LOW);
+    }
+    </code></pre>
+
+    <h2>Additional Questions</h2>
+
+    <h3>1) Voltage vs Time Graph</h3>
+    <p>
+      The plot below shows voltage across each LED vs the time. I set all LEDs to blink
+      500 ms ON and 500 ms OFF. The ON voltage for red LED is about 2.0 V, Green LED about 2.2 V, Blue LED about 3.0 V.
+    </p>
+    <img src="graph.jpg" alt="Voltage vs Time Graph" width="600" />
+
+    <h3>2) How many LEDs could I blink independently? How much current is that?</h3>
+    <p>
+      I can blink up to 12 LEDs independently; since each of my LEDs uses about 10 mA current,
+      that would be about 120 mA current.
+    </p>
+
+    <h3>3) How fast until I can’t tell they’re blinking?</h3>
+    <p>
+      When the LEDs blink faster than 60 times per second, it would look as if it's constantly on.
+    </p>
+
+    <h3>4) Use of AI tools</h3>
+    <p>
+      I used ChatGPT to help me debug my circuit. I was initially confused with the LED direction
+      and how should it connect to the resistor, so my LEDs were not able to light up. I used AI to 
+      help me fix this issue by explaining to me that my LED should be placed across the center gap of
+      the breadboard and my ground wire should be connected to the correct rail. After fixing these issues,
+      my LEDs were able to blink and light up successfully. 
+    </p>
+
+
+    <p><a href="index.html">← Back to main page</a></p>
   </body>
 </html>
