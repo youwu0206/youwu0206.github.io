@@ -3,16 +3,146 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
-
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
-
+    <title>You Wu's HCDE 439 Physical Computing Page!</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
+
   <body>
-    <h1>Example Student's Assignment 2!</h1>
+    <h1>You Wu's Assignment 2!</h1>
+
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
+      <img src="a2circuit.jpg" alt="Breadboard circuit for Assignment 2" />
+      <p>
+        This assignment uses three LEDs (red, green, and blue), a push button with a 10 kΩ pull-down,
+        4 resistors, and functions such as digitalRead, digitalWrite, analogWrite,
+        and for loops. Each LED fades in one direction when the button is pressed.
+      </p>
     </div>
+
+
+    <h2>Schematic</h2>
+    <figure>
+      <img src="a2schematic.jpg" />
+      <figcaption>
+        Connections: red on pin 3 with 220 Ω to ground, green on pin 5 with 220 Ω to ground, blue on pin 6 with 100 Ω to ground.
+        Button: one side to 5 V, the other side to pin 2 and through 10 kΩ to ground.
+      </figcaption>
+    </figure>
+
+  
+    <h2>Animated GIF</h2>
+    <figure>
+      <img src="Fading.gif" alt="LEDs fading when the button is pressed" />
+      <figcaption>When the button is pressed, the LEDs fade from 0 to 255. When the button is released, all LEDs turn off.</figcaption>
+    </figure>
+
+   
+    <h2>Firmware (commented line by line)</h2>
+    <pre><code>
+      // set red LED on D3
+      const int R = 3;
+      // set green LED on D5
+      const int G = 5;
+      // set blue  LED on D6 
+      const int B = 6;
+      // set button on D2
+      const int BUTTON = 2;
+      
+      void setup() {
+        // initialize red LED pin as output
+        pinMode(R, OUTPUT);
+        // initialize green LED pin as output
+        pinMode(G, OUTPUT);
+        // initialize blue LED pin as output
+        pinMode(B, OUTPUT);
+        // initialize button pin as input
+        pinMode(buttonPin, INPUT);
+      }
+      
+      void loop() {
+        // read current button state
+        int buttonState = digitalRead(buttonPin);
+      
+        // if the button is pressed, state is HIGH
+        if (buttonState == HIGH) {
+          // fade RED LED
+          for (int i = 0; i &lt;256; i++) {
+            // set RED brightness to i
+            analogWrite(R, i);
+            // delay
+            delay(10);
+          }
+      
+          // fade GREEN LED
+          for (int i = 0; i &lt; 256; i++) {
+            // set GREEN brightness to i
+            analogWrite(G, i);
+            // delay
+            delay(10);
+          }
+      
+          // fade BLUE LED
+          for (int i = 0; i &lt;256; i++) {
+            // set BLUE brightness to i
+            analogWrite(B, i);
+            // delay
+            delay(10);
+          }
+        } else {
+          // when button is not pressed, turn RED off
+          digitalWrite(R, LOW);
+          // turn GREEN off
+          digitalWrite(G, LOW);
+          // turn BLUE off
+          digitalWrite(B, LOW);
+        }
+      }
+      
+</code></pre>
+
+    <h2>Calculations and Explanations</h2>
+    <p>
+      LED resistor selection:
+      For red and green LEDs, I calculated like this: R = (5 − 1.8) / 0.02 = 160 Ω; which is closest to 220 Ω, so current ≈ (5 − 1.8) / 220 ≈ 14.5 mA.
+      For blue LED, I did R = (5 − 3.3) / 0.02 = 85 Ω, which is closest to 100 Ω, so current ≈ (5 − 3.3) / 100 ≈ 17 mA.
+      For the button calculation, it uses a 10 kΩ pull-down to keep D2 at a stable low when it is not pressed. When the button is pressed, current is limited to about 0.5 mA at 5 V.
+    </p>
+
+   
+    <h2>Additional Questions</h2>
+    <ol>
+      <li>
+        1. PWM chart:
+        <figure>
+          <img src="a2graph.jpg" alt="voltage vs time graph for analogWrite values 64, 128, and 255" />
+          <figcaption>
+            Time on the x-axis and voltage on the y-axis. The three lines show duty cycles for 64 (~25%), 128 (~50%), and 255 (100%).
+          </figcaption>
+        </figure>
+      </li>
+      <li>
+        2. Battery life: During a 0 to 255 fade, the average duty for the active LED is about 50%.
+        Red and Green LED average is calculated by: 14.5 mA × 0.5 = 7.25 mA. Blue average is calculated by: 17 mA × 0.5 = 8.5 mA.
+        The average for all 3 of them is: (7.25 + 7.25 + 8.5) / 3 ≈ 7.7 mA.
+        With a 1200 mAh battery, runtime ≈ 1200 / 7.7 ≈ 155 hours.
+      </li>
+      <li>
+        3. 
+      </li>
+      <li>
+        4. AI tools: I used ChatGPT to debug my wiring. I was confused about how to connect the push button. 
+        I was not sure whether I needed to move the button to the same row as the 5 V wire or place a wire from the
+        red rail to one left leg, and where to place the 10 kΩ pull-down. I also forgot to put a wire that connects 
+        the left and right side of the breadboard’s blue rail, so it can actually reach Arduino GND. ChatGPT walked me 
+        through those steps and I fixed the wiring.
+      </li>
+    </ol>
   </body>
 </html>
+
+
+
+
+
+
+
