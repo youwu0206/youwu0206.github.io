@@ -37,7 +37,7 @@
     </figure>
 
    
-    <h2>Firmware (commented line by line)</h2>
+    <h2>Firmware</h2>
     <pre><code>
       // set red LED on D3
       const int R = 3;
@@ -112,7 +112,7 @@
     <h2>Additional Questions</h2>
     <ol>
       <li>
-        1. PWM chart:
+        PWM chart:
         <figure>
           <img src="a2graph.jpg" alt="voltage vs time graph for analogWrite values 64, 128, and 255" />
           <figcaption>
@@ -121,20 +121,23 @@
         </figure>
       </li>
       <li>
-        2. Battery life: During a 0 to 255 fade, the average duty for the active LED is about 50%.
+        Battery life: During a 0 to 255 fade, the average duty for the active LED is about 50%.
         Red and Green LED average is calculated by: 14.5 mA × 0.5 = 7.25 mA. Blue average is calculated by: 17 mA × 0.5 = 8.5 mA.
         The average for all 3 of them is: (7.25 + 7.25 + 8.5) / 3 ≈ 7.7 mA.
         With a 1200 mAh battery, runtime ≈ 1200 / 7.7 ≈ 155 hours.
       </li>
       <li>
-        3. 
+        Measured LED voltage:
+        Red LED (D3): 2.04 V (compared to 1.8 V, difference is +0.24 V). I ≈ (5−2.04)/220 ≈ 13.5 mA.
+        Green LED (D5): 2.99 V (compared to 1.8 V, differrence is +1.19 V). I ≈ (5−2.99)/220 ≈ 9.1 mA.
+        Blue LED (D6): 3.05 V (compared to 3.3 V, difference is −0.25 V). I ≈ (5−3.05)/100 ≈ 19.5 mA.
       </li>
       <li>
-        4. AI tools: I used ChatGPT to debug my wiring. I was confused about how to connect the push button. 
+        AI tools: I used ChatGPT to debug my wiring. I was confused about how to connect the push button. 
         I was not sure whether I needed to move the button to the same row as the 5 V wire or place a wire from the
         red rail to one left leg, and where to place the 10 kΩ pull-down. I also forgot to put a wire that connects 
         the left and right side of the breadboard’s blue rail, so it can actually reach Arduino GND. ChatGPT walked me 
-        through those steps and I fixed the wiring.
+        through those steps and I fixed the wiring. Also, I used ChatGPT to check if my multimeter is set up correctly.
       </li>
     </ol>
   </body>
