@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <title>You Wu's HCDE 439 Physical Computing Page!</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <h1>You Wu's Assignment 4!</h1>
+    <p><a href="index.html">← Back to homepage</a></p>
+
+
+    <div class="header">
+      <img src="a4circuit.jpg" alt="Breadboard circuit for Assignment 4" />
+      <p>
+        This assignment uses a capacitive touch sensor with a piece of aluminum foil and a 1MΩ resistor to control a servo motor. 
+        Touching the foil causes the servo to rotate 15 degrees.
+      </p>
+    </div>
+
+
+    <h2>Schematic</h2>
+    <figure>
+      <img src="a4schematic.jpg" />
+      <figcaption>
+        Schematic for A4: Pin 4 and Pin 2 connected via 1MΩ resistor with aluminum foil on Pin 2. Servo motor connected to Pin 9, 5V, and GND
+      </figcaption>
+    </figure>
+
+  
+    <h2>Animated GIF</h2>
+    <figure>
+      <img src="a4.gif" alt="Servo moter turns when I touch the aluminum foil." />
+      <figcaption>
+        When I touch the aluminum foil, the servo moter turns by 15 degrees. When it reaches 180 degrees, it reverts 
+        back to its starting position.
+      </figcaption>
+    </figure>
+
+   
+    <h2>Firmware</h2>
+    <pre><code>
+        
+        // Include the CapacitiveSensor library
+        #include &lt;CapacitiveSensor.h&lt;
+
+        // Include the Servo library
+        #include &lt;Servo.h&lt;
+
+        // 1 megohm resistor between pins 4 & 2, pin 2 is sensor pin
+        // Pin 4 is the send pin, Pin 2 is connected to aluminum foil
+        CapacitiveSensor cs_4_2 = CapacitiveSensor(4, 2);
+        // Create a servo object
+        Servo myServo;
+        // Servo angle, start at 90 degrees
+        int servoAngle = 90;
+        // Threshold value for detecting a touch
+        long touchThreshold = 500;
+
+        // Prevent multiple triggers from same touch
+        bool wasTouched = false;
+
+        void setup() {
+        // Turn off autocalibrate on the capacitive sensor
+        cs_4_2.set_CS_AutocaL_Millis(0xFFFFFFFF);
+        // Initialize serial communication
+        Serial.begin(9600);
+        // Attach the servo to pin 9
+        myServo.attach(9);
+        // Move servo to starting position
+        myServo.write(servoAngle);
+        // Print ready message
+        Serial.println("Capacitive Touch Servo Ready!");
+        Serial.println("Touch the foil to move servo by 15 degrees");
+        }
+
+        void loop() {
+        // Read the sensor value with 30 samples
+        long total1 = cs_4_2.capacitiveSensor(30);
+        // Print to Serial Monitor
+        Serial.print("Sensor value: ");
+        Serial.print(total1);
+        
+        // Check if sensor value is more than threshold
+        if (total1 > touchThreshold) {
+            // Only move servo if this is a new touch
+            if (!wasTouched) {
+            // Prevent multiple triggers
+            wasTouched = true;
+            
+            // Increase servo angle by 15 degrees
+            servoAngle = servoAngle + 15;
+            // If angle exceeds 180, wrap back to 0
+            if (servoAngle > 180) {
+                servoAngle = 0;
+            }
+            // Send the new angle to the servo motor
+            myServo.write(servoAngle);
+            // Print touch confirmation with new servo angle
+            Serial.print(" | TOUCH - Angle: ");
+            Serial.println(servoAngle);
+            }
+        } else {
+            // No touch detected, print status
+            wasTouched = false;
+            Serial.println();
+        }
+        // Delay between readings to limit data
+        delay(100);
+        }
+      
+</code></pre>
+
+
+    <h2>Value Justifications</h2>
+    <p>
+      I chose to use a 1 megaohm resistor because in the lecture it says "Use a 1 megaohm resistor (or less maybe) for absolute touch to activate
+      ". This value provides good sensitivity for direct touch.
+      I set the touch threshold to 500 because it's the most accurate number to reflect my touch/no touch state. Initially, I set the value to 1000
+      but it's not as accurate. I found that my touch are only around 800, so 1000 wouldn't trigger the touch.
+      I used capacitiveSensor(30): 30 samples per reading as shown in lecture.
+    </p>
+
+   
+    <h2>Additional Questions</h2>
+    <ol>
+      <li>
+        Time VS Voltage Graph:
+        <figure>
+        <img src="a4graph.jpg" alt="graph for question 1" />
+        <figcaption>
+            Time on the x-axis and voltage on the y-axis. Calculation shown in the picture.
+        </figcaption>
+        </figure>
+      </li>
+      <li>
+        // Take multiple readings and compare
+        reading1 = sensor.read()
+        reading2 = sensor.read()
+        reading3 = sensor.read()
+
+        // If at least 2 readings match, use that value
+        if (reading1 == reading2 OR reading1 == reading3):
+            finalValue = reading1
+        else if (reading2 == reading3):
+            finalValue = reading2
+        else:
+            // All different, take another reading
+            finalValue = sensor.read()
+      </li>
+      <li>
+        // Take multiple samples and average them
+        total = 0
+        numSamples = 10
+
+        for i from 1 to numSamples:
+            total = total + sensor.read()
+            
+        // Calculate average to reduce noise effect
+        finalValue = total / numSamples
+      </li>
+      <li>
+        Use of AI: I used Claude in this assignment. Initially, I wanted to use an IR remote control with the servo moter,
+        but the serial moniter kept outputing values even when the buttons were not pressed. I asked Claude to help me troubleshoot.
+        We debugged for 20 minutes but the IR resistor kept flashing red light without the buttons being pressed, so it recommended me to switch to capacitive sensor. 
+        For the coding part, I looked at the lecture slides and the arduino documentation for a framework. Then I used Claude to debug. It also helped me to clarify 
+        the graphing question calculations.
+        Reflection: I think's it's helpful for debugging and clarification, but I still had to test the code and circuit multiple times and adjust as needed. 
+      </li>
+    </ol>
+  </body>
+</html>
+
+
+
+
+
+
+
