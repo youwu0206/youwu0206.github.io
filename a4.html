@@ -136,6 +136,7 @@
         </figure>
       </li>
       <li>
+        <pre><code>
         // Take multiple readings and compare
         reading1 = sensor.read()
         reading2 = sensor.read()
@@ -149,8 +150,10 @@
         else:
             // All different, take another reading
             finalValue = sensor.read()
+    </code></pre>
       </li>
       <li>
+        <pre><code>
         // Take multiple samples and average them
         total = 0
         numSamples = 10
@@ -160,6 +163,7 @@
             
         // Calculate average to reduce noise effect
         finalValue = total / numSamples
+    </code></pre>
       </li>
       <li>
         Use of AI: I used Claude in this assignment. Initially, I wanted to use an IR remote control with the servo moter,
