@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    <title>You Wu's HCDE 439 Physical Computing Page!</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <h1>You Wu's Final Project!</h1>
+    <p><a href="plantcompanion.jpg">← Back to homepage</a></p>
+
+
+    <div class="header">
+      <img src="plantcompanion.jpg" alt="final product" />
+      <p>
+        <h2>Concept Overview</h2><br />
+        The Plant Companion is an interactive device designed to sit next to a real
+        plant and help users understand their plant’s environment. The
+        companion is designed to be a flower, which the center contains an RGB
+        LED. The LED changes color based on real-time readings of temperature
+        and light level, giving instant feedback about whether a plant is in a
+        comfortable environment.<br /><br />
+        The goal is to create a fun way for users to quickly
+        identify if their plant needs more light or if the surrounding temperature is
+        comfortable.<br /><br />
+      </p>
+    </div>
+
+
+    <div class="technical-implementation"><br />
+        <p>
+            <h2>Technical Implementation</h2>
+      
+          <strong>Hardware Components:</strong><br />
+          - Arduino Uno<br />
+          - DHT11 temperature sensor<br />
+          - Photoresistor + 10kΩ resistor<br />
+          - RGB LED with resistors<br />
+          - Breadboard + jumper wires<br />
+          - Cardboard enclosure with clay made flower, stem, pot<br /><br />
+      
+          <strong>How Everything Works:</strong><br />
+          The electronics are placed inside the cardboard base, with vent holes for the DHT11 Temperature Sensor and 
+          small openings for the photoresistor and LED wires. When the sensors sense a change in the environment,
+          the LED changes color accordingly to reflect the plant's environment.<br /><br />
+      
+          <strong>LED Output States:</strong><br />
+          - Green:</span> Good light and comfortable temperature<br />
+          - Red:</span> Adequate light but temperature too hot or too cold<br />
+          - Blue:</span> Comfortable temperature but insufficient light<br />
+          - Purple:</span> Both light and temperature are not ideal<br /><br />
+        </p>
+      </div>
+
+    
+      <h2>Circuit</h2>
+      <figure>
+        <img src="finalcircuit.jpg" alt="Circuit for final project." />
+        <figcaption>
+          <br />
+          Breadboard circuit showing the connections.<br /><br />
+        </figcaption>
+      </figure>
+      
+  
+    <h2>Schematic</h2>
+    <figure>
+      <img src="finalschematic.jpg" alt="Schematic for final project." />
+      <figcaption>
+        <br />
+        This schematic shows how the RGB LED, DHT11 temperature sensor, and photoresistor are connected to the Arduino. 
+        The DHT11 connects to pin 2, while the photoresistor is connected to pin A0. 
+        The RGB LED’s red, green, and blue channels connect to pins 9, 10, and 11 with 220 resistors. 
+        Power and ground rails distribute 5V and GND across all components.<br /><br />
+      </figcaption>
+    </figure>
+
+    <h2>Demo Video</h2>
+    <p>
+        <a href="https://drive.google.com/file/d/1LhRwTcgvw9L-hM0QjslsxeJutr7t9zfp/view?usp=sharing" target="_blank">
+            Click here to watch my Plant Companion demo video!<br /><br />
+        </a>
+    </p>
+   
+    <h2>Firmware</h2>
+    <pre><code>
+        #include "DHT.h"
+
+        // LED pins connection
+        const int redPin   = 9;
+        const int greenPin = 10;
+        const int bluePin  = 11;
+
+        // photoresistor connection
+        const int lightPin = A0;
+        #define DHTPIN 2
+        #define DHTTYPE DHT11
+
+        // create a DHT object
+        DHT dht(DHTPIN, DHTTYPE);
+
+        // set thresholds for light level and temp
+        const int   LIGHT_THRESHOLD = 600; // boundary between dim and bright 
+        const float TEMP_OK_LOW     = 21.0;  // lowest comfortable temperature
+        const float TEMP_OK_HIGH    = 24.0;  // highest comfortable temperature
+
+        void setup() {
+        // start serial communication
+        Serial.begin(9600);
+        // initialize the DHT11 temperature sensor
+        dht.begin();
+
+        // set LED pins as outputs
+        pinMode(redPin, OUTPUT);
+        pinMode(greenPin, OUTPUT);
+        pinMode(bluePin, OUTPUT);
+
+        // LED starts as off
+        setColor(0, 0, 0);
+        }
+
+        void loop() {
+        // Read sensors
+        float t = dht.readTemperature();     
+        int lightRaw = analogRead(lightPin);
+
+        // if the DHT sensor fails to read
+        if (isnan(t)) {
+            // print error message
+            Serial.println("Failed to read from DHT sensor!");
+            // turn off LED
+            setColor(0, 0, 0);
+            delay(1000);
+            return;
+        }
+
+        // determine if the current environment is bright enough and has comfortable temperature
+        bool isBright = (lightRaw > LIGHT_THRESHOLD);  // true if room is bright
+        bool tempOK   = (t >= TEMP_OK_LOW && t <= TEMP_OK_HIGH);  // true if temp is in the OK range
+
+        int r = 0, g = 0, b = 0;
+
+        if (!isBright && !tempOK) {
+            // Dim + inadequate temp, LED is purple
+            r = 255; g = 0; b = 255;
+        } else if (!isBright && tempOK) {
+            // Dim + comfortable temp, LED is blue
+            r = 0; g = 0; b = 255;
+        } else if (isBright && !tempOK) {
+            // Bright + inadequate temp, LED is red
+            r = 255; g = 0; b = 0;
+        } else {
+            // Bright + comfortable temp, LED is green
+            r = 0; g = 255; b = 0;
+        }
+
+        setColor(r, g, b);
+
+        // Print the data in serial monitor
+        Serial.print("Temp: ");
+        Serial.print(t);
+        Serial.print(" C  |  Light: ");
+        Serial.print(lightRaw);
+        Serial.print("  |  Bright? ");
+        Serial.print(isBright ? "YES" : "NO");
+        Serial.print("  |  Temp OK? ");
+        Serial.println(tempOK ? "YES" : "NO");
+
+        delay(1000);
+        }
+
+        // set RGB color
+        void setColor(int r, int g, int b) {
+        // write PWM values to corresponding channel
+        analogWrite(redPin,   r);
+        analogWrite(greenPin, g);
+        analogWrite(bluePin,  b);
+        }
+</code></pre>
+
+  </body>
+</html>
